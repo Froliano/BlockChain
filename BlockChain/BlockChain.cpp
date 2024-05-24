@@ -3,6 +3,7 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 
 std::string calculateHash(int index, const std::string& previousHash, const std::string& data, const std::tm& time)
 {
@@ -17,7 +18,7 @@ std::string calculateHash(int index, const std::string& previousHash, const std:
 
 class Block
 {
-private:
+protected:
     int index;
     std::string hash;
     std::string previousHash;
@@ -25,7 +26,6 @@ private:
     std::string data;
 
 public:
-
     Block(int index, const std::string& data, Block* previousBlock = nullptr) : index(index), data(data)
     {
         if (previousBlock == nullptr)
@@ -36,6 +36,7 @@ public:
         {
             previousHash = previousBlock->getHash();
         }
+
         std::time_t t = std::time(nullptr);
         localtime_s(&time, &t);
         hash = calculateHash(index, previousHash, data, time);
@@ -60,35 +61,54 @@ public:
     {
         return hash;
     }
-
 };
 
-int main() {
-    Block genesisBlock(0, "Genesis Block");
-    Block block1(1, "Ceci est une donnee", &genesisBlock);
-    Block block2(2, "Les nuages dansaient lentement dans le ciel, peignant des formes mysterieuses au-dessus de la ville endormie.", &block1);
-    Block block3(3, "Le parfum enivrant des roses emplissait l'air, transportant les souvenirs d'un ete lointain.", &block2);
-    Block block4(4, "Les eclats de rire resonnaient a travers la foret, accompagnant le murmure apaisant du ruisseau voisin.", &block3);
-    Block block5(5, "Sous le clair de lune argente, les etoiles semblaient chuchoter des secrets anciens a ceux qui ecoutaient attentivement.", &block4);
-    Block block6(6, "Les pages du livre tournaient avec impatience, revelant des mondes imaginaires et des aventures inattendues a chaque tournant.", &block5);
-    Block block7(7, "Le vent soufflait doucement a travers les champs de ble, apportant une sensation de paix et de tranquillite.", &block6);
-    Block block8(8, "Les enfants couraient dans le parc, leurs rires s'elevaient dans l'air frais du matin.", &block7);
-    Block block9(9, "Le crepuscule enveloppait la ville, les lumieres des lampadaires se refletant sur les paves mouilles.", &block8);
-    Block block10(10, "Les vagues s'ecrasaient contre les rochers, creant une melodie apaisante et eternelle.", &block9);
+class Blockchain
+{
+private:
+    std::vector<Block> chain;
+
+public:
+    Blockchain()
+    {
+        chain.push_back(Block(0, "Genesis Block"));
+    }
+
+    void addBlock(const std::string& data)
+    {
+        int index = chain.size();
+        Block* previousBlock = &chain.back();
+        chain.push_back(Block(index, data, previousBlock));
+    }
+
+    void printBlockchain()
+    {
+        for (auto& block : chain)
+        {
+            block.print();
+        }
+    }
+};
+
+int main()
+{
+    Blockchain myBlockchain;
+
+    Block block1(1, "");
+    myBlockchain.addBlock("Ceci est une donnee");
+
+    Block block2(2, "", &block1);
+    myBlockchain.addBlock("Les nuages dansaient lentement dans le ciel, peignant des formes mysterieuses au-dessus de la ville endormie.");
 
 
-    genesisBlock.print();
-    block1.print();
-    block2.print();
-    block3.print();
-    block4.print();
-    block5.print();
-    block6.print();
-    block7.print();
-    block8.print();
-    block9.print();
-    block10.print();
+    Block block3(3, "", &block2);
+    myBlockchain.addBlock("Le parfum enivrant des roses emplissait l'air, transportant les souvenirs d'un ete lointain.");
 
+    Block block4(4, "", &block3);
+    myBlockchain.addBlock("Les eclats de rire resonnaient a travers la foret, accompagnant le murmure apaisant du ruisseau voisin.");
 
+    std::cout << "Blockchain Original :" << std::endl;
+    myBlockchain.printBlockchain();
     return 0;
 }
+
