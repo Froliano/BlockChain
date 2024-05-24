@@ -1,20 +1,41 @@
-// BlockChain.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
-//
-
 #include <iostream>
+
+class Block
+{
+private:
+    int index;
+    std::string hash;
+    std::string previousHash;
+    std::tm* time;
+    std::string data;
+
+public:
+    Block()
+    {
+        std::time_t t = std::time(nullptr);
+        std::tm* time = std::localtime(&t);
+
+        std::cout << "Date actuelle : "
+            << (time->tm_year + 1900) << '-'
+            << (time->tm_mon + 1) << '-'
+            << time->tm_mday
+            << std::endl;
+    }
+
+    ~Block(){}
+
+    void print()
+    {
+        std::cout << "index : " << index << std::endl;
+        std::cout << "hash : " << hash << std::endl;
+        std::cout << "previous hash : " << previousHash << std::endl;
+        std::cout << "date/heure : " << time << std::endl;
+    }
+};
 
 int main()
 {
     std::cout << "Hello World!\n";
+
+    return 0;
 }
-
-// Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
-// Déboguer le programme : F5 ou menu Déboguer > Démarrer le débogage
-
-// Astuces pour bien démarrer : 
-//   1. Utilisez la fenêtre Explorateur de solutions pour ajouter des fichiers et les gérer.
-//   2. Utilisez la fenêtre Team Explorer pour vous connecter au contrôle de code source.
-//   3. Utilisez la fenêtre Sortie pour voir la sortie de la génération et d'autres messages.
-//   4. Utilisez la fenêtre Liste d'erreurs pour voir les erreurs.
-//   5. Accédez à Projet > Ajouter un nouvel élément pour créer des fichiers de code, ou à Projet > Ajouter un élément existant pour ajouter des fichiers de code existants au projet.
-//   6. Pour rouvrir ce projet plus tard, accédez à Fichier > Ouvrir > Projet et sélectionnez le fichier .sln.
