@@ -6,20 +6,27 @@ private:
     int index;
     std::string hash;
     std::string previousHash;
-    std::tm* time;
+    std::tm time;
     std::string data;
 
 public:
-    Block()
-    {
-        std::time_t t = std::time(nullptr);
-        std::tm* time = std::localtime(&t);
 
-        std::cout << "Date actuelle : "
-            << (time->tm_year + 1900) << '-'
-            << (time->tm_mon + 1) << '-'
-            << time->tm_mday
-            << std::endl;
+    Block(int index, std::string data, Block* previousBlock = nullptr) : index(index), data(data)
+    {
+
+        if (previousBlock == nullptr)
+        {
+            previousHash = "0";
+        }
+        else
+        {
+            previousHash = previousBlock->getHash();
+        }
+
+        std::time_t t = std::time(nullptr);
+        std::tm time;
+        localtime_s(&time, &t);
+
     }
 
     ~Block(){}
@@ -29,8 +36,19 @@ public:
         std::cout << "index : " << index << std::endl;
         std::cout << "hash : " << hash << std::endl;
         std::cout << "previous hash : " << previousHash << std::endl;
-        std::cout << "date/heure : " << time << std::endl;
+        std::cout << "Date actuelle : "
+            << (time.tm_year + 1900) << '-'
+            << (time.tm_mon + 1) << '-'
+            << time.tm_mday
+            << std::endl;
+        std::cout << "donnee : " << data << std::endl;
     }
+
+    std::string getHash()
+    {
+        return hash;
+    }
+
 };
 
 int main()
